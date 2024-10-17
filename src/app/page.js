@@ -29,7 +29,8 @@ export default function Home () {
         }
       }
       const response = await fetch('/api/vision', options)
-      const data = await response.text()
+      const data = await response.json()
+      console.log(data)
       setResponse(data)
     }
     catch (error) {
@@ -69,11 +70,11 @@ export default function Home () {
             autoplay={{ autoplay: 1000 }}
             loop
           >
-            <SwiperSlide className='rounded-lg bg-[url("/wardrobe/remera1.png")] bg-cover bg-center min-h-[320px] max-h-[320px] min-w-[320px]'></SwiperSlide>
-            <SwiperSlide className='rounded-lg bg-[url("/wardrobe/sudadera2.png")] bg-cover bg-center min-h-[320px] max-h-[320px] min-w-[320px]'></SwiperSlide>
-            <SwiperSlide className='rounded-lg bg-[url("/wardrobe/blusa3.png")] bg-cover bg-center min-h-[320px] max-h-[320px] min-w-[320px]'></SwiperSlide>
-            <SwiperSlide className='rounded-lg bg-[url("/wardrobe/pantalon4.png")] bg-cover bg-center min-h-[320px] max-h-[320px] min-w-[320px]'></SwiperSlide>
-            <SwiperSlide className='rounded-lg bg-[url("/wardrobe/pantalon5.png")] bg-cover bg-center min-h-[320px] max-h-[320px] min-w-[320px]'></SwiperSlide>
+            <SwiperSlide className='rounded-lg bg-[url("/wardrobe/remera1.png")] bg-contain bg-no-repeat bg-center min-h-[320px] max-h-[320px] min-w-[320px]'></SwiperSlide>
+            <SwiperSlide className='rounded-lg bg-[url("/wardrobe/sudadera2.png")] bg-contain bg-no-repeat bg-center min-h-[320px] max-h-[320px] min-w-[320px]'></SwiperSlide>
+            <SwiperSlide className='rounded-lg bg-[url("/wardrobe/blusa3.png")] bg-contain bg-no-repeat bg-center min-h-[320px] max-h-[320px] min-w-[320px]'></SwiperSlide>
+            <SwiperSlide className='rounded-lg bg-[url("/wardrobe/pantalon4.png")] bg-contain bg-no-repeat bg-center min-h-[320px] max-h-[320px] min-w-[320px]'></SwiperSlide>
+            <SwiperSlide className='rounded-lg bg-[url("/wardrobe/pantalon5.png")] bg-contain bg-no-repeat bg-center min-h-[320px] max-h-[320px] min-w-[320px]'></SwiperSlide>
           </Swiper>
         </div>
         <div className='flex w-full mx-auto p-6'>
@@ -100,7 +101,7 @@ export default function Home () {
             <ScaleLoader color='#ddd' />
           </div>
         )}
-        {response && <p className='p-6 text-lg mb-3'>{response}</p>}
+        {response && <p className='p-6 text-lg mb-3'>{response.result}</p>}
       </section>
     </div>
   )
