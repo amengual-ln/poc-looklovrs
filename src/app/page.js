@@ -9,11 +9,62 @@ import 'swiper/css';
 
 import { ScaleLoader } from 'react-spinners'
 
+import { useWardrobe } from '@/stores/wardrobe'
+import { marked } from 'marked'
+
 export default function Home () {
+  const { wardrobe, setInitialItems } = useWardrobe()
   const [value, setValue] = useState('')
   const [response, setResponse] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+
+  // Esto es solo para la demo
+  useEffect(() => {
+    if (wardrobe.length > 0) return
+    const demoWardrobe = [
+      {
+        id: 1,
+        name: "Remera",
+        image: "remera1.png",
+      },
+      {
+        id: 2,
+        name: "Sudadera",
+        image: "sudadera2.png",
+      },
+      {
+        id: 5,
+        name: "Pantalon",
+        image: "pantalon5.png",
+      },
+    ]
+    demoWardrobe.forEach(item => {
+      getBase64FromUrl('/wardrobe/' + item.image).then(base64 => base64)
+        .then(image => item.image_base64 = image)
+    })
+    setInitialItems(demoWardrobe)
+  }, [setInitialItems])
+
+  async function getBase64FromUrl(url) {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  const replaceImageSrc = (markdownText) => {
+    // Usar una expresión regular para encontrar y reemplazar los src
+    return markdownText.replace(/<img src="(\d+|[\w-]+)"(.*?)\/>/g, (match, id, attributes) => {
+      // Reemplazar el ID con la URL completa
+      const newSrc = `${wardrobe.find(item => item.id === id).image}`;
+      return `<img src="${newSrc}"${attributes} />`;
+    });
+  };
 
   const analyzeImage = async () => {
     setResponse('')
@@ -22,7 +73,8 @@ export default function Home () {
       const options = {
         method: 'POST',
         body: JSON.stringify({
-          message: value
+          message: value,
+          wardrobe
         }),
         headers: {
           'Content-type': 'application/json'
@@ -30,7 +82,10 @@ export default function Home () {
       }
       const response = await fetch('/api/vision', options)
       const data = await response.json()
-      console.log(data)
+
+      data.result = replaceImageSrc(data.result)
+
+      console.log(data.result)
       setResponse(data)
     }
     catch (error) {
@@ -101,7 +156,7 @@ export default function Home () {
             <ScaleLoader color='#ddd' />
           </div>
         )}
-        {response && <p className='p-6 text-lg mb-3'>{response.result}</p>}
+        {response && <p className='p-6 text-lg mb-3' dangerouslySetInnerHTML={{ __html: marked(response.result) }}></p>}
       </section>
     </div>
   )
