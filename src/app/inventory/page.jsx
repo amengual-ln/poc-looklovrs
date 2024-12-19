@@ -32,7 +32,7 @@ export default function Page() {
           onClick={handleNewItem}
           className="grid place-content-center border border-gray-200 rounded-lg"
         >
-          New item
+          Nueva prenda
         </article>
         {wardrobe.map((item, index) => (
           <article
